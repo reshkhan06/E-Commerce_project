@@ -17,6 +17,17 @@ class Reset(BaseModel):
     password: str
 
 
+class Update_Product(BaseModel):
+    id: int
+    price: float
+    discount: int
+
+
+class Update_City(BaseModel):
+    b_name: str
+    city: str
+
+
 # class UserRegisterSchema(BaseModel):
 #     name: str = Field(..., max_length=20)
 #     email: EmailStr
@@ -47,9 +58,9 @@ class Product(Model):
     name = fields.CharField(max_length=20, null=False, index=True)
     category = fields.CharField(max_length=30, index=True)
     price = fields.DecimalField(max_digits=12, decimal_places=2)
-    discount = fields.IntField()
+    discount = fields.IntField(default=0)
     offer_expiration_date = fields.DatetimeField(default=datetime.utcnow)
-    image = fields.CharField(max_length=200, null=False, default="product.jpg")
+    image = fields.CharField(max_length=2000, null=False, default="product.jpg")
     bussiness = fields.ForeignKeyField("models.Bussiness", related_name="products")
 
 

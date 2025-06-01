@@ -2,8 +2,10 @@ from passlib.context import CryptContext
 from jose import jwt, JWTError
 from dotenv import load_dotenv
 import os
-from fastapi import HTTPException, status
+from fastapi import HTTPException, status, Depends
 from models import User
+
+from fastapi.security import OAuth2PasswordBearer
 
 
 load_dotenv()
@@ -12,8 +14,24 @@ pwd_contxt = CryptContext(schemes=["bcrypt"], deprecated="auto")
 KEY = os.getenv("SECRET")
 ALGO = "HS256"
 
+o_auth = OAuth2PasswordBearer(tokenUrl="/user/get-token")
 
-async def token_verify(token: str):
+
+async def get_user(token=Depends(o_auth)) -> User:
+    user = await token_verify(token=token)
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED, detail="User is not verified"
+        )
+    if not user.is_verified:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="User is nt verified .Please cck your email",
+        )
+    return user
+
+
+async def token_verify(token: str) -> User:
     try:
         data = jwt.decode(token=token, key=KEY, algorithms=ALGO)
         print(f"Decoding {data}")

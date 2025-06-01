@@ -82,7 +82,7 @@ async def send_email(email: EmailSchema, instance: User):
     token_data = {"id": instance.id, "name": instance.name}
     token = token_encode(data=token_data)
 
-    verify_url = f"http://127.0.0.1:8000/verification?token={token}"
+    verify_url = f"http://127.0.0.1:8000/user/verification?token={token}"
 
     email_body = html.replace("{{name}}", instance.name).replace("{{url}}", verify_url)
 
